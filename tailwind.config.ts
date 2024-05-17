@@ -13,6 +13,11 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      colors: {
+        "time-tracker-gray": "#4e4e4f",
+        "time-tracker-teal": "#08a7b2",
+        "time-tracker-teal2": "#09a7b2",
+      },
     },
   },
   plugins: [],
