@@ -91,16 +91,128 @@ const usersWhoCanAccessSchema = new mongoose.Schema({
   },
 });
 
+const teamSchema = new mongoose.Schema({
+  val: {
+    type: Number,
+    required: true,
+  },
+  value: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+});
+
 const projectSchema = new mongoose.Schema({
-  project: {
+  userId: {
     type: String,
-    required: [true, "Please and a project name"],
+    required: true,
   },
-  client: {
+  projectName: {
     type: String,
+    required: [true, "Please add project name"],
   },
-  access: {
-    type: [usersWhoCanAccessSchema],
+  clientName: {
+    type: String,
+    required: true,
+  },
+  technology: {
+    type: String,
+    required: true,
+  },
+  hoursAlloted: {
+    type: String,
+    required: true,
+  },
+  hoursConsumed: {
+    type: String,
+    requried: true,
+  },
+  hoursLeft: {
+    type: String,
+    requried: true,
+  },
+  projectDesc: {
+    type: String,
+    requried: true,
+  },
+  teams: {
+    type: [teamSchema],
+    requried: true,
+  },
+});
+
+const permissionSchema = new mongoose.Schema({
+  val: {
+    type: Number,
+    required: true,
+  },
+  value: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+});
+
+const employeeSchema = new mongoose.Schema({
+  empName: {
+    type: String,
+    required: true,
+  },
+  empId: {
+    type: String,
+    required: true,
+  },
+  designation: {
+    type: Object,
+    required: true,
+  },
+  department: {
+    type: Object,
+    required: true,
+  },
+  permission: {
+    type: [permissionSchema],
+    required: true,
+  },
+  technologies: {
+    type: [permissionSchema],
+    required: true,
+  },
+});
+
+const clientCountrySchema = new mongoose.Schema({
+  value: {
+    type: String,
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+});
+
+const clientSchema = new mongoose.Schema({
+  clientName: {
+    type: String,
+    required: true,
+  },
+  contactNumber: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  clientCountry: {
+    type: clientCountrySchema,
     required: true,
   },
 });
@@ -110,3 +222,7 @@ export const Tasks =
   mongoose.models?.tasks || mongoose.model("tasks", tasksSchema);
 export const Projects =
   mongoose.models?.projects || mongoose.model("projects", projectSchema);
+export const Employee =
+  mongoose.models?.employee || mongoose.model("employee", employeeSchema);
+export const Client =
+  mongoose.models?.client || mongoose.model("client", clientSchema);

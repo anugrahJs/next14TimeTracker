@@ -1,14 +1,25 @@
+import { NextRequest } from "next/server";
+import { mySession } from "@/utils/types";
 import { UserDocument } from "./models";
 import { NextAuthConfig } from "next-auth";
+import { Session, DefaultSession } from "next-auth";
+import { User } from "next-auth";
+
 // import { NextApiResponse } from "next";
 
-type sessionUserType = {
-  name?: string;
-  email?: string;
-  image?: string;
-  id?: string;
-  isAdmin?: boolean;
+export type sessionUserType = {
+  user: {
+    name?: string;
+    email?: string;
+    image?: string;
+    id?: string;
+    isAdmin?: boolean;
+  };
 };
+
+interface authUser extends User {
+  isAdmin?: boolean;
+}
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -17,28 +28,32 @@ export const authConfig: NextAuthConfig = {
   providers: [],
   callbacks: {
     async jwt({ token, user }) {
-      const authUser = user as UserDocument;
+      // const authUser = user as UserDocument;
+      const authUser = user as authUser;
       if (authUser) {
-        token.id = authUser.id;
-        token.isAdmin = authUser.isAdmin;
+        token.id = authUser?.id;
+        token.isAdmin = authUser?.isAdmin;
       }
       return token;
     },
 
     async session({ session, token }) {
-      const sessionUser = session.user as sessionUserType;
-
+      // const mySession = session as sessionUserType;
       if (token) {
-        sessionUser.id = token.id as string;
-        sessionUser.isAdmin = token.isAdmin as boolean;
+        (session.user as any).id = token.id as string;
+        (session.user as any).isAdmin = token.isAdmin as boolean;
       }
+
       return session;
     },
 
+    //this function includes our current user session and user request
     authorized({ auth, request }) {
       //return false hoga tabhi redirect karega upar jo pages me page mentioned ha us par
-      const user = auth?.user;
+      const myAuth = auth as sessionUserType;
+      const user = myAuth?.user;
 
+      const isOnAdminPanel = request.nextUrl?.pathname.startsWith("/admin");
       const isOnLoginPage = request.nextUrl?.pathname.startsWith("/login");
       const isOnHomePage = request.nextUrl?.pathname === "/";
       const isOnDashboardPage =
@@ -49,8 +64,16 @@ export const authConfig: NextAuthConfig = {
         request.nextUrl?.pathname.startsWith("/screenshots");
       const isOnTimeTrackerPage =
         request.nextUrl?.pathname.startsWith("/timetracker");
+      const isOnClientsPage = request.nextUrl?.pathname.startsWith("/clients");
+      const isOnEmployeesPage =
+        request.nextUrl?.pathname.startsWith("/employees");
 
-      //only authenticated users can reach the homepage, dashboard, projects, screenshots, timetrackerpage
+      //only admin can reach the admin panel
+      if (isOnAdminPanel && !user?.isAdmin) {
+        return false;
+      }
+
+      //only authenticated users can reach the homepage, dashboard, projects, screenshots, timetrackerpage, employees and clients page
       if (isOnHomePage && !user) {
         return false;
       }
@@ -68,6 +91,14 @@ export const authConfig: NextAuthConfig = {
       }
 
       if (isOnDashboardPage && !user) {
+        return false;
+      }
+
+      if (isOnEmployeesPage && !user?.isAdmin) {
+        return false;
+      }
+
+      if (isOnClientsPage && !user?.isAdmin) {
         return false;
       }
 

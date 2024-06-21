@@ -11,6 +11,10 @@ import { RxDashboard } from "react-icons/rx";
 import { IoMdTime } from "react-icons/io";
 import { GrDocumentText } from "react-icons/gr";
 import { MdOutlineScreenshot } from "react-icons/md";
+import { BsPersonCircle } from "react-icons/bs";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { sessionUserType } from "@/lib/auth.config";
+import { Session } from "next-auth";
 
 type errorMessage = {
   message: string;
@@ -21,7 +25,7 @@ type userInfo = {
   department: string;
 };
 
-const Sidebar = () => {
+const Sidebar = ({ session }: { session: Session | null }) => {
   // const navigate = useNavigate();
   // const router=useRouter
   const router = useRouter();
@@ -30,6 +34,8 @@ const Sidebar = () => {
     fullName: "",
     department: "",
   });
+
+  const mySession = session as sessionUserType;
 
   function getErrorMessage(error: unknown) {
     if (error instanceof Error) return error.message;
@@ -128,6 +134,27 @@ const Sidebar = () => {
               </div>
             </Link>
           </li>
+          {mySession?.user.isAdmin && (
+            <>
+              <li className="pl-8 py-3 hover:bg-time-tracker-teal2 hover:text-white">
+                <Link href="/clients">
+                  <div className="flex items-center gap-4">
+                    <BsPersonCircle style={{ fontSize: "1.5rem" }} />
+                    Clients
+                  </div>
+                </Link>
+              </li>
+              <li className="pl-8 py-3 hover:bg-time-tracker-teal2 hover:text-white">
+                <Link href="/employees">
+                  <div className="flex items-center gap-4">
+                    <HiOutlineUserGroup style={{ fontSize: "1.5rem" }} />
+                    Employees
+                  </div>
+                </Link>
+              </li>
+            </>
+          )}
+
           <li className="bg-time-tracker-teal2 py-3 text-white flex justify-center">
             <form action={handleLogout}>
               <button

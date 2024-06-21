@@ -1,12 +1,14 @@
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 import { ProviderComponent } from "@/store/ProviderComponent";
 import Sidebar from "@/components/Sidebar";
 import { usePathname, useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
+const robotoCondensed = Roboto_Condensed({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -25,13 +27,13 @@ export default function RootLayout({
   // const isOnLoginPage = router.pathname.startsWith("/login");
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={robotoCondensed.className}>
         <ProviderComponent>
           {/* <div className="basis-1/6">
             {/* {pathname !== "/login" && <Sidebar />} 
             </div> */}
           <div>{children}</div>
-        </ProviderComponent>
+        </ProviderComponent>  
       </body>
     </html>
   );

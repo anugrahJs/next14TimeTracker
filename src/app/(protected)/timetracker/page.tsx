@@ -7,6 +7,8 @@ import Tasks from "@/components/Tasks";
 import { addTask, addSubtask, getTasksFromBackend } from "@/utils/http";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { subtask } from "@/store/tasks-slice";
+import { getProjects } from "@/utils/http";
+import { projectsType } from "../projects/page";
 
 let interval: ReturnType<typeof setInterval>;
 
@@ -33,9 +35,10 @@ const TimeTracker = () => {
   const [time, setTime] = useState(0);
   const [isStarted, setIsStarted] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>();
+  const [projects, setProjects] = useState<projectsType[]>([]);
   const [taskEntry, setTaskEntry] = useState({
     taskName: "",
-    taskCategory: "Donna may Travel",
+    taskCategory: "Project Beta",
   });
 
   const [error, setError] = useState<{ message: string }>();
@@ -56,6 +59,15 @@ const TimeTracker = () => {
       }
     }
     getTasks();
+    const getProjectsFromBackend = async () => {
+      try {
+        let myProjects = await getProjects();
+        setProjects(myProjects);
+      } catch (err) {
+        setError({ message: getErrorMessage(err) });
+      }
+    };
+    getProjectsFromBackend();
   }, []);
 
   useEffect(() => {
@@ -226,11 +238,16 @@ const TimeTracker = () => {
             }
             value={taskEntry.taskCategory}
           >
-            <option value="Donna may travel">Donna may travel</option>
+            {projects.map((project) => (
+              <option key={project?._id} value={project?.projectName}>
+                {project?.projectName}
+              </option>
+            ))}
+            {/* <option value="Donna may travel">Donna may travel</option>
             <option value="Ebay mockup">Ebay mockup</option>
             <option value="IT consilium">IT consilium</option>
             <option value="Learning Time">Learning Time</option>
-            <option value="Mazeix">Mazeix</option>
+            <option value="Mazeix">Mazeix</option> */}
           </select>
           <p className="font-medium text-lg">
             {hours < 10 ? "0" + hours : hours}:
