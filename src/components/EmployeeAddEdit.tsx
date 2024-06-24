@@ -9,6 +9,7 @@ import { IoMdClose } from "react-icons/io";
 import { addEmployeeData } from "@/utils/http";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { updateEmployeeData } from "@/utils/http";
+import { addUser } from "@/utils/http";
 
 type optionsType = {
   val: number;
@@ -130,7 +131,6 @@ const EmployeeAddEdit = ({
   const handleFormSubmission = async (value: FieldValues) => {
     try {
       if (employeeData) {
-        console.log("Employee data already exists");
         await updateEmployeeData(employeeData?._id, value);
         reset({
           empName: "",
@@ -142,6 +142,7 @@ const EmployeeAddEdit = ({
         });
       } else {
         await addEmployeeData(value);
+        await addUser(value);
         reset({
           empName: "",
           empId: "",

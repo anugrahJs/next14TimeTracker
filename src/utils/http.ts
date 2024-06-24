@@ -1,6 +1,6 @@
 import { RootState } from "./../store/store";
 // import { getTasksFromBackend } from '@/utils/http';
-import { projectsType } from "@/app/(protected)/projects/page";
+import { projectsType } from "@/components/Projects";
 import { task, subtask } from "@/store/tasks-slice";
 import { employeeType } from "@/components/EmployeeAddEdit";
 import { FieldValues } from "react-hook-form";
@@ -260,5 +260,41 @@ export const updateClientData = async (id: string, clientData: FieldValues) => {
   });
 
   const resData = await res.json();
+  return resData;
+};
+
+//User API Request functions
+type optionsType = {
+  val: number;
+  value: string;
+  label: string;
+};
+
+//addNewUser when adding new employee
+export const addUser = async ({
+  empName,
+  empId,
+  designation,
+  department,
+  technologies,
+  permission,
+}: FieldValues) => {
+  const newUser = {
+    username: empName.replace(/\s/g, ""),
+    fullName: empName,
+    department: department?.label,
+    email: `${empName.split(" ")[0]}@timetracker.com`,
+    password: `${empName.split(" ")[0]}${empId}`,
+  };
+
+  const res = await fetch("http://localhost:3000/api/addUser", {
+    method: "POST",
+    body: JSON.stringify(newUser),
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+
+  const resData = res.json();
   return resData;
 };
