@@ -61,3 +61,7 @@ export const handleLogout = async () => {
   //   .catch((err) => console.log("ERROR IN CATCH", err.message));
   // return { success: true };
 };
+
+export const handleGoogleLogin = async () => {
+  await signIn("google");
+};

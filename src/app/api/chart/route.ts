@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
   const session = await auth();
-  console.log("Current Session >>>>", session);
+
   //get tasks until monday
   const todayDate = new Date();
   todayDate.setHours(23, 59, 59, 999);

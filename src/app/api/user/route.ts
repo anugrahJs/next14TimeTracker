@@ -8,7 +8,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   console.log("Session while fetching user >>> ", session);
   try {
     connectToDb();
-    const user = await User.findById(session?.user?.id);
+    const user = await User.findOne({ email: session?.user?.email });
     console.log("Our user is >>>", user);
     if (!user) {
       return NextResponse.json(

@@ -4,6 +4,8 @@ import { UserDocument } from "./models";
 import { NextAuthConfig } from "next-auth";
 import { Session, DefaultSession } from "next-auth";
 import { User } from "next-auth";
+import { connectToDb } from "./connectToDb";
+import { User as dbUser } from "./models";
 
 // import { NextApiResponse } from "next";
 
@@ -27,18 +29,25 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, profile }) {
       // const authUser = user as UserDocument;
+
       const authUser = user as authUser;
       if (authUser) {
-        token.id = authUser?.id;
-        token.isAdmin = authUser?.isAdmin;
+        connectToDb();
+        const loggedInUser = await dbUser.findOne({ email: user?.email });
+        //explicitly adding userId by finding the user in the database as the correct id was not present when logging in with the social media providers
+        if (loggedInUser) {
+          token.id = loggedInUser?._id;
+          token.isAdmin = authUser?.isAdmin;
+        }
       }
       return token;
     },
 
     async session({ session, token }) {
       // const mySession = session as sessionUserType;
+      console.log("Jun 26 Session: ", session);
       if (token) {
         (session.user as any).id = token.id as string;
         (session.user as any).isAdmin = token.isAdmin as boolean;

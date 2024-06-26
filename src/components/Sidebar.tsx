@@ -15,6 +15,8 @@ import { BsPersonCircle } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { sessionUserType } from "@/lib/auth.config";
 import { Session } from "next-auth";
+import Image from "next/image";
+import profilePicture from "../../public/profilePic.jpg";
 
 type errorMessage = {
   message: string;
@@ -84,12 +86,23 @@ const Sidebar = ({ session }: { session: Session | null }) => {
         <h1 className="px-4 py-10 text-3xl font-semibold text-time-tracker-gray font-roboto text-center">
           Time Tracker
         </h1>
-        <div className="pl-16 py-4 text-sm text-gray-600">
+        <div className="pl-8 py-4 text-sm text-gray-600 flex gap-4">
           {error && <h3>Error: User Not Available</h3>}
-          {userDetails && <h3>{userDetails.fullName}</h3>}
-          {userDetails && (
-            <h5 className="text-xs text-teal-600">{userDetails.department}</h5>
-          )}
+          <Image
+            src={profilePicture}
+            alt="Profile Pic"
+            width={30}
+            height={30}
+            className="rounded-full"
+          />
+          <div>
+            {userDetails && <h3>{userDetails.fullName}</h3>}
+            {userDetails && (
+              <h5 className="text-xs text-teal-600">
+                {userDetails.department}
+              </h5>
+            )}
+          </div>
         </div>
         <ul className=" text-gray-600 text-sm">
           <li className="pl-8 py-3 hover:bg-time-tracker-teal2 hover:text-white">

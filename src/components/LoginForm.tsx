@@ -4,6 +4,8 @@ import { login } from "@/lib/action";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { handleGoogleLogin } from "@/lib/action";
 
 const LoginForm = () => {
   // const initialState = {
@@ -82,6 +84,11 @@ const LoginForm = () => {
             className="bg-time-tracker-teal text-white py-2 rounded-md text-sm"
           >
             LOGIN
+          </button>
+        </form>
+        <form action={handleGoogleLogin}>
+          <button className="border border-gray-400 flex items-center justify-center rounded-md w-full gap-2 mt-2 py-1   text-md ">
+            Login with Google <FcGoogle />
           </button>
         </form>
       </div>

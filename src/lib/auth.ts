@@ -2,6 +2,7 @@
 import NextAuth from "next-auth";
 // import { CredentialsProvider } from "next-auth/providers/credentials";
 import Credentials from "next-auth/providers/credentials";
+import google from "next-auth/providers/google";
 import { connectToDb } from "./connectToDb";
 import { User } from "./models";
 import bcrypt from "bcryptjs";
@@ -48,6 +49,15 @@ export const {
   ...authConfig,
 
   providers: [
+    google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
+    }),
     Credentials({
       // name: "credentials",
       // id: "credentials",
@@ -68,6 +78,30 @@ export const {
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        connectToDb();
+        try {
+          const user = await User.findOne({ email: profile!?.email });
+
+          if (!user) {
+            const newUser = new User({
+              username: profile?.given_name,
+              fullName: profile?.name,
+              department: "Not Assigned",
+              email: profile?.email,
+              img: profile?.picture,
+            });
+
+            await newUser.save();
+          }
+        } catch (err) {
+          console.log("Error occured while loggin with google: ", err);
+          return false;
+        }
+      }
+      return true;
+    },
     ...authConfig.callbacks,
   },
 });

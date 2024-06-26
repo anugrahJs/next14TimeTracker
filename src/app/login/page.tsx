@@ -13,7 +13,10 @@ type errorMessage = {
 
 export default function LoginPage() {
   return (
-    <LoginForm />
+    <>
+      <LoginForm />
+    </>
+
     // const router = useRouter();
 
     // const [input, setInput] = useState({
